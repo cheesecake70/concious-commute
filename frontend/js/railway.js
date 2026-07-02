@@ -124,11 +124,7 @@ class RailwayClientGraph {
       const [currStation, currLine] = node.split('_');
 
       if (currStation === destination) {
-        let finalCost = cost;
-        if (isPeak) {
-          finalCost = Math.floor(finalCost * 1.15); // Peak hours delay
-        }
-        return { duration: finalCost, path };
+        return { duration: cost, path };
       }
 
       const neighbors = this.graph[node] || [];

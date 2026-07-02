@@ -95,10 +95,7 @@ class RailwayGraph:
 
             # Check if we reached destination station
             if curr[0] == destination:
-                final_cost = cost
-                if is_peak:
-                    final_cost = int(final_cost * 1.15)  # 15% delay during peak hours
-                return final_cost, path
+                return cost, path
 
             for neighbor, weight, line in self.graph.get(curr, []):
                 if neighbor not in visited:

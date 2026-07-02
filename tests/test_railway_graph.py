@@ -20,10 +20,9 @@ def test_railway_calculations():
     assert time == 58
     assert "Dadar" in path
 
-    # Test peak hour calculation
+    # Test that peak hour calculation is disabled (no delay added)
     peak_time, _ = rg.calculate_travel_time("Churchgate", "Thane", is_peak=True)
-    print(f"Churchgate to Thane (Peak): {peak_time} mins")
-    assert peak_time == int(58 * 1.15)  # 66 mins
+    assert peak_time == 58
 
 def test_pdf_extraction():
     # Test reading data_structures.pdf
