@@ -653,7 +653,7 @@ def get_mock_study_plan(subject: str, duration: int, module_filter: str = "any m
     Generates a realistic, highly technical sequence of study cards
     for a given subject matching the duration, optionally filtering by module.
     """
-    num_cards = max(3, min(8, round(duration / 2.5)))
+    num_cards = max(3, min(30, round(duration / 2.5)))
     
     # 1. Normalize subject key matching using aliases
     subject_key = subject.lower().strip()

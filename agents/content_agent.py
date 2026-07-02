@@ -14,7 +14,7 @@ content_agent = Agent(
     - Selected Module: {selected_module} (Defaults to "any module")
     
     Tasks:
-    1. Calculate the number of index cards to generate: `num_cards = max(3, min(15, round(commute_duration / 2.5)))`.
+    1. Calculate the number of index cards to generate: `num_cards = max(3, min(30, round(commute_duration / 2.5)))`.
     2. Choose a few closely related core concepts from the syllabus in {syllabus_topics} that fit into a {commute_duration} minute study session. If {selected_module} is specified (i.e., not 'any module' and not empty), you MUST ONLY choose concepts and topics that belong strictly to that selected module/chapter from the syllabus.
     3. Generate exactly `num_cards` index cards.
     4. Each card must contain a very small, focused concept (taking 2-3 minutes to read and fully absorb).
