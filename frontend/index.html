@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conscious Commute — Mumbai Local Study Planner</title>
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  
+  <!-- Base & Mobile CSS -->
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/mobile.css">
+  
+  <!-- KaTeX Math Rendering CSS & JS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <header>
+    <div class="logo-container">
+      <span class="logo-text">Conscious Commute</span>
+    </div>
+  </header>
+
+  <main class="main-container">
+    
+    <!-- Sidebar Controls -->
+    <aside class="sidebar">
+      
+      <div class="card" style="display: flex; flex-direction: column; gap: 0.85rem; padding: 1.25rem; box-shadow: var(--shadow-premium);">
+        <h3 class="card-title" style="margin-bottom: 0.25rem; font-size: 1.2rem;">
+          Configure Commute
+        </h3>
+
+        <!-- Train Line Selection -->
+        <div class="form-group" style="margin-bottom: 0.1rem;">
+          <label>Filter by Train Line</label>
+          <div class="line-selector" style="margin-top: 0.25rem;">
+            <button class="line-btn" data-line="Western">Western</button>
+            <button class="line-btn" data-line="Central">Central</button>
+            <button class="line-btn" data-line="Harbour">Harbour</button>
+          </div>
+        </div>
+        
+        <div class="form-group" style="margin-bottom: 0.1rem;">
+          <label for="select-source">Source Station</label>
+          <select id="select-source">
+            <!-- Populated dynamically via JS -->
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0.1rem;">
+          <label for="select-destination">Destination Station</label>
+          <select id="select-destination">
+            <!-- Populated dynamically via JS -->
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0.1rem;">
+          <label for="select-subject">Syllabus Subject</label>
+          <select id="select-subject">
+            <!-- Populated dynamically via JS -->
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0.1rem; display: none;" id="module-group">
+          <label for="select-module">Select Module</label>
+          <select id="select-module">
+            <option value="any module">Any Module</option>
+            <!-- Populated dynamically via JS -->
+          </select>
+        </div>
+
+        <!-- Route Summary Row (Hidden input keeps JS happy) -->
+        <input type="checkbox" id="toggle-peak" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.25rem; padding-top: 0.75rem; border-top: 1px solid var(--border-glass); gap: 0.75rem;">
+          <span style="font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);">Route Summary</span>
+          <div style="display: flex; gap: 0.4rem; flex-shrink: 0; font-size: 0.8rem;">
+            <span style="background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.2); padding: 0.35rem 0.5rem; border-radius: 6px; color: #38bdf8; display: inline-flex; align-items: center; gap: 0.25rem;">
+              ⏱️ <span id="metric-duration" style="font-weight: 700;">0 min</span>
+            </span>
+            <span style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); padding: 0.35rem 0.5rem; border-radius: 6px; color: var(--accent-green); display: inline-flex; align-items: center; gap: 0.25rem;">
+              🚉 <span id="metric-stations" style="font-weight: 700;">0</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Action Button -->
+        <button class="btn-generate" id="btn-submit" disabled style="margin-top: 0.5rem; width: 100%;">
+          Generate Study Cards
+        </button>
+      </div>
+
+    </aside>
+
+    <!-- Main Map and Study Plan Panel Split -->
+    <section class="map-study-split">
+      <div id="map-container"></div>
+      
+      <div class="study-plan-panel" id="study-panel">
+        <div class="placeholder-view" id="panel-placeholder">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+            <path d="M6 6h10"/>
+            <path d="M6 10h10"/>
+          </svg>
+          <div>
+            <h3>Your Commute Study Cards Will Appear Here</h3>
+            <p style="font-size: 0.85rem; margin-top: 0.25rem;">Select your route and subject, then hit "Generate Study Cards" to begin learning.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- Marked Markdown Parser -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- DOMPurify HTML Sanitizer -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+
+  <!-- Application Scripts -->
+  <script src="/js/railway.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/map.js"></script>
+  <script src="/js/ui.js"></script>
+</body>
+</html>
